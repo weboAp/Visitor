@@ -1,0 +1,39 @@
+{
+    "name": "weboap/visitor",
+    "description": "",
+    "authors": [
+        {
+            "name": "WeboAp",
+            "email": "weboap@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+	"jalle19/php-whitelist-check": "dev-master",
+	"geoip2/geoip2": "0.5.*"
+        
+	
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations"
+        ],
+        "psr-4": {
+	    "Weboap\\Visitor\\": "src/Package/Visitor",
+	    "Weboap\\Visitor\\Seeders\\": "src/seeders",
+	    "Weboap\\Visitor\\Facades\\": "src/Package/Facades",
+	    "Weboap\\Visitor\\Models\\": "src/Package/Models",
+	    "Weboap\\Visitor\\Storage\\": "src/Package/Storage",
+	    "Weboap\\Visitor\\Validation\\": "src/Package/Validation",
+	    "Weboap\\Visitor\\Libs\\": "src/Package/Libs",
+	    "Weboap\\Visitor\\Tests\\": "tests"
+        }
+    },
+    "minimum-stability": "stable",
+    "require-dev": {
+		"illuminate/support": "4.1.*",
+		"mockery/mockery": "dev-master",
+		"way/laravel-test-helpers": "dev-master"
+		
+	}
+}
