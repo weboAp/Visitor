@@ -1,22 +1,25 @@
-<?php namespace Weboap\Visitor\Libs\Geo;
+<?php namespace Weboap\Visitor\Geo\Max;
 
 use GeoIp2\Database\Reader;
 use GeoIp2\Exception\AddressNotFoundException;
 
-use Exception;
+use Weboap\Visitor\Geo\Interfaces\GeoInterface;
 use Illuminate\Config\Repository as Config;
 
 
-class GeoLocation {
+
+class MaxMind implements GeoInterface{
     
     
-    protected $config;
     protected $reader;
     
-    public function __construct( Config $config, Reader $reader )
+    protected $config;
+    
+    public function __construct( Config $config )
     {
-      $this->config = $config;
-      $this->reader = $reader;
+       $db = $config->get('visitor::maxmind_db_path');
+       
+       $this->reader = new Reader( $db );
     }
     
     
@@ -53,8 +56,9 @@ class GeoLocation {
         return filter_var($ip, FILTER_VALIDATE_IP) !== false;
     }
     
+    
+ 
+    
   
     
 }
-
-class DatabaseNotFoundException extends Exception {}

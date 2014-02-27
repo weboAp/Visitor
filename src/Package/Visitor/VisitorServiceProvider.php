@@ -29,26 +29,29 @@ class VisitorServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		$this->RegisterStorage();
+		$this->RegisterStorageInterface();
+		$this->RegisterGeoInterface();
 		
-		$this->RegisterGeoLocationBinding();
-		
-		$this->RegisterVisitorBinding();
+		$this->RegisterVisitorInstance();
 		
 		$this->RegisterBooting();
 	}
 	
-	public function RegisterVisitorBinding()
+	public function RegisterVisitorInstance()
 	{
 		$this->app['visitor'] = $this->app->share(function($app)
 			{
+			   
+			    
 			    return new Visitor(
-						 $this->app->make('Weboap\Visitor\Storage\VisitorInterface'),
-						 $this->app['visitor.geo'],
+						 $app->make('Weboap\Visitor\Storage\Interfaces\VisitorInterface'),
+						 $app->make('Weboap\Visitor\Geo\Interfaces\GeoInterface', array( $app['config'] )),
 						 array(
-							$this->app->make('Weboap\Visitor\Validation\IpValidator'),
-							$this->app->make('Weboap\Visitor\Validation\IgnoredIpChecker')
-							)
+							$app->make('Weboap\Visitor\Validation\IpValidator'),
+							$app->make('Weboap\Visitor\Validation\IgnoredIpChecker')
+							),
+						 $app->make('config'),
+						 $app->make('cache')
 						 
 					      );
 			});
@@ -56,20 +59,7 @@ class VisitorServiceProvider extends ServiceProvider {
 	}
 	
 	
-	public function RegisterGeoLocationBinding()
-	{
-		$this->app['visitor.geo'] = $this->app->share(function($app)
-			{
-			    $reader = new \GeoIp2\Database\Reader( $this->app->make('config')->get('visitor::maxmind_db_path'));
-			    
-			    return new \Weboap\Visitor\Libs\Geo\GeoLocation(
-						 $this->app->make('config'),
-						 $reader						 
-					      );
-			});
-	
-	}
-	
+
 	
 	public function RegisterBooting()
 	{
@@ -83,13 +73,23 @@ class VisitorServiceProvider extends ServiceProvider {
 		 
 	}
 	
-	protected function RegisterStorage()
+	protected function RegisterStorageInterface()
 	{
 		$this->app->singleton(
-			'Weboap\Visitor\Storage\VisitorInterface',
+			'Weboap\Visitor\Storage\Interfaces\VisitorInterface',
 			'Weboap\Visitor\Storage\QbVisitorRepository'
                 );
-	}	
+	}
+	
+	protected function RegisterGeoInterface()
+	{
+		
+		
+		$this->app->singleton(
+                    'Weboap\Visitor\Geo\Interfaces\GeoInterface',
+                    'Weboap\Visitor\Geo\Max\MaxMind'
+                );
+	}
 
 	/**
 	 * Get the services provided by the provider.
