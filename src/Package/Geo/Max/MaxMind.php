@@ -6,6 +6,7 @@ use GeoIp2\Exception\AddressNotFoundException;
 use Weboap\Visitor\Geo\Interfaces\GeoInterface;
 use Illuminate\Config\Repository as Config;
 
+use Illuminate\Http\Request as Request;
 
 
 class MaxMind implements GeoInterface{
@@ -15,18 +16,24 @@ class MaxMind implements GeoInterface{
     
     protected $config;
     
-    public function __construct( Config $config )
+    protected $request;
+    
+    public function __construct( Config $config, Request $request )
     {
-       $db = $config->get('visitor::maxmind_db_path');
+       $db = $config->get('visitor::maxmind.path');
+       $this->request = $request;
        
        $this->reader = new Reader( $db );
     }
     
+
     
-    function locate( $ip )
+    public function locate( $ip = null )
     {
         
-        if( !$this->_validate($ip) )  return null;
+        $ip = isset( $ip ) ? $ip : $this->get_ip();
+        
+        if( ! $this->_is_ip4( $ip ) && ! $this->_is_ipv6( $ip ) )  return array();
         
         try{
            
@@ -45,20 +52,28 @@ class MaxMind implements GeoInterface{
         }
         catch (AddressNotFoundException $e) {
             
-            return null;
+            return array();
         };
            
     }
     
     
-    private function _validate( $ip )
+    private function _is_ip4( $ip )
     {
         return filter_var($ip, FILTER_VALIDATE_IP) !== false;
     }
     
+    private function _is_ipv6( $ip )
+    { 
+	return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)!== false;
+    }
     
- 
+    public function get_ip()
+    {
+        return $this->request->getClientIp();
+    }
     
   
     
 }
+

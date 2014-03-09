@@ -5,7 +5,6 @@ use Weboap\Visitor\Geo\Interfaces\GeoInterface;
 
 use Illuminate\Cache\CacheManager as Cache;
 use Illuminate\Config\Repository as Config;
-use Illuminate\Exception\Handler as Exception;
 use Carbon\Carbon as c;
 use Countable;
 
@@ -80,8 +79,10 @@ class Visitor implements Countable{
 	}
 	
 	
-	public function reg( $ip )
+	public function reg( $ip = null )
 	{
+		 $ip = isset( $ip ) ? $ip : $this->geo->get_ip();
+		
 		if( is_string( $ip ) && $this->_check_ip( $ip ) ) 
 		{
 		
@@ -171,4 +172,3 @@ class Visitor implements Countable{
     
 }
 
-class InvalidArgumentException extends Exception {}

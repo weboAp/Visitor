@@ -45,7 +45,7 @@ class VisitorServiceProvider extends ServiceProvider {
 			    
 			    return new Visitor(
 						 $app->make('Weboap\Visitor\Storage\Interfaces\VisitorInterface'),
-						 $app->make('Weboap\Visitor\Geo\Interfaces\GeoInterface', array( $app['config'] )),
+						 $app->make('Weboap\Visitor\Geo\Interfaces\GeoInterface', array( $app['config'], $app['request'] )),
 						 array(
 							$app->make('Weboap\Visitor\Validation\IpValidator'),
 							$app->make('Weboap\Visitor\Validation\IgnoredIpChecker')
