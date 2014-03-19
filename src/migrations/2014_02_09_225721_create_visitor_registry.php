@@ -16,8 +16,8 @@ class CreateVisitorRegistry extends Migration {
 		{
 			$table->increments('id');
 			$table->string('ip', 32);
-			$table->text('geo')->nullable();
-			$table->integer('clicks')->unsigned()->default( 0 );
+			$table->string('country', 4)->nullable();
+			$table->integer('clicks')->unsigned()->default(0);
 			$table->timestamps();
 		});
 	}

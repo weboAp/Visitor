@@ -1,9 +1,9 @@
 <?php namespace Weboap\Visitor;
 
-use Weboap\Visitor\Storage\Interfaces\VisitorInterface as VisitorInterface;
-use Weboap\Visitor\Geo\Interfaces\GeoInterface;
+use Weboap\Visitor\Storage\VisitorInterface;
+use Weboap\Visitor\Services\Geo\GeoInterface;
 
-use Illuminate\Cache\CacheManager as Cache;
+use Weboap\Visitor\Services\Cache\CacheClass;
 use Illuminate\Config\Repository as Config;
 use Carbon\Carbon as c;
 use Countable;
@@ -25,8 +25,8 @@ class Visitor implements Countable{
 	protected $storage;
 	
 	/**
-	* The Cache Manager Instance
-	* @var Cache
+	* The Cache Interface
+	* @var Weboap\Visitor\Services\Cache\CacheClass
 	*/
 	protected $cache;
 	
@@ -36,11 +36,8 @@ class Visitor implements Countable{
 	*/
 	protected $config;
 
-	/**
-	* The Validators array
-	* @array Validator
-	*/
-	protected $validators;
+	
+	protected $ip;
 	
 	/**
 	* The Geo Interface
@@ -50,16 +47,16 @@ class Visitor implements Countable{
 	
 	
 	
-	public function __construct( VisitorInterface $storage,
-				    GeoInterface $geo,
-				    array $validators = array(),
-				    Config $config,
-				    Cache $cache
+	public function __construct( 	VisitorInterface $storage,
+					GeoInterface $geo,
+					Ip $ip,
+					Config $config,
+					CacheClass $cache
 				    )
 	{
 		$this->storage = $storage;
 		$this->geo = $geo;
-		$this->validators = $validators;
+		$this->ip = $ip;
 		$this->config = $config;
 		$this->cache = $cache;
 		
@@ -69,70 +66,85 @@ class Visitor implements Countable{
 	}
 	
 	
-	public function get( $ip )
+	
+	
+	public function get( $ip = null )
 	{
-		if( is_string( $ip ) && $this->_check_ip( $ip ) ) 
+		if( $this->ip->isValid( $ip ) )
 		{
 			return $this->storage->get( $ip );
 		}
-		return null;
+		
+		return null;	
 	}
 	
 	
-	public function reg( $ip = null )
+	public function log()
 	{
-		 $ip = isset( $ip ) ? $ip : $this->geo->get_ip();
 		
-		if( is_string( $ip ) && $this->_check_ip( $ip ) ) 
+		$ip = $this->ip->get();
+		
+		if( ! $this->ip->isValid( $ip ) ) return;
+		
+		
+		if( $this->has( $ip ) )
 		{
-		
-			$geo = $this->geo->locate( $ip );
+			//ip already exist in db.
+			$this->storage->increment( $ip );
 			
-			if( $this->has( $ip ) )
-			{
-				//ip already exist in db.
-				$this->storage->increment( $ip );
-				
-			}
-			else
-			{
-				//ip doesnt exist  in db
-				$data = array(
-						'ip'		=> $ip,
-						'geo'		=> serialize( $geo ),
-						'clicks' 	=> 1,
-						'updated_at'	=> c::now(),
-						'created_at'	=> c::now()
-						);
-				$this->storage->create( $data );
-				
-			}
+		}
+		else
+		{
+			$geo = $this->geo->locate( $ip );
+		
+			$country =  array_key_exists('country_code', $geo) ? $geo['country_code'] : null;
+		
+			
+			//ip doesnt exist  in db
+			$data = array(
+					'ip'		=> $ip,
+					'country'	=> $country,
+					'clicks' 	=> 1,
+					'updated_at'	=> c::now(),
+					'created_at'	=> c::now()
+					);
+			$this->storage->create( $data );
+			
+		}
 			
 		// Clear the database cache
-		$this->cache->forget( $this->tableName );
+		$this->cache->destroy( $this->tableName );
 		
-		}
+		
 		
 	}
 	
 	
 	public function forget( $ip )
 	{
+		if( ! $this->ip->isValid( $ip ) ) return;
+		
 		//delete the ip from db
 		$this->storage->delete( $ip );
-
+		
 		// Clear the database cache
-		$this->cache->forget( $this->tableName );
+		$this->cache->destroy( $this->tableName );
+	
+			
 	}	
 	
 	
 	public function has( $ip )
 	{
+		if( ! $this->ip->isValid( $ip ) ) return false;
+		
 		return $this->count( $ip ) > 0 ;
+	
 	}
 	
 	public function count( $ip = null)
 	{
+		//if ip null then return count of all visits
 		return $this->storage->count( $ip );
 	}
 	
@@ -156,15 +168,7 @@ class Visitor implements Countable{
 	}
 	
 	
-	private function _check_ip( $ip )
-	{
-		foreach ($this->validators as $validator)
-		{
-			if( ! $validator->validate( $ip ) ) return false;
-		}
-		
-		return true;
-	}
+	
 	
 
 	

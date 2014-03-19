@@ -29,29 +29,44 @@ class VisitorServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		$this->RegisterStorageInterface();
-		$this->RegisterGeoInterface();
+		$this->registerBindings();
 		
-		$this->RegisterVisitorInstance();
+		$this->RegisterIp();
+		
+		$this->RegisterVisitor();
 		
 		$this->RegisterBooting();
 	}
 	
-	public function RegisterVisitorInstance()
+	public function RegisterVisitor()
 	{
 		$this->app['visitor'] = $this->app->share(function($app)
 			{
 			   
 			    
 			    return new Visitor(
-						 $app->make('Weboap\Visitor\Storage\Interfaces\VisitorInterface'),
-						 $app->make('Weboap\Visitor\Geo\Interfaces\GeoInterface', array( $app['config'], $app['request'] )),
-						 array(
-							$app->make('Weboap\Visitor\Validation\IpValidator'),
-							$app->make('Weboap\Visitor\Validation\IgnoredIpChecker')
-							),
+						 $app->make('Weboap\Visitor\Storage\VisitorInterface'),
+						 $app->make('Weboap\Visitor\Services\Geo\GeoInterface'),
+						 $app['ip'],
 						 $app->make('config'),
-						 $app->make('cache')
+						 $app->make('Weboap\Visitor\Services\Cache\CacheInterface')
+						 
+					      );
+			});
+	
+	}
+	
+	
+	public function RegisterIp()
+	{
+		$this->app['ip'] = $this->app->share(function($app)
+			{
+			    return new Ip(
+					$app->make('request'),
+					array(
+					       $app->make('Weboap\Visitor\Services\Validation\Validator'),
+					       $app->make('Weboap\Visitor\Services\Validation\Checker')
+					       )
 						 
 					      );
 			});
@@ -61,7 +76,7 @@ class VisitorServiceProvider extends ServiceProvider {
 	
 
 	
-	public function RegisterBooting()
+	public function registerBooting()
 	{
 		 $this->app->booting(function()
 				{
@@ -70,26 +85,30 @@ class VisitorServiceProvider extends ServiceProvider {
 			
 				    
 				});
-		 
 	}
 	
-	protected function RegisterStorageInterface()
+	
+	
+	protected function registerBindings()
 	{
 		$this->app->singleton(
-			'Weboap\Visitor\Storage\Interfaces\VisitorInterface',
+			'Weboap\Visitor\Storage\VisitorInterface',
 			'Weboap\Visitor\Storage\QbVisitorRepository'
                 );
-	}
-	
-	protected function RegisterGeoInterface()
-	{
-		
 		
 		$this->app->singleton(
-                    'Weboap\Visitor\Geo\Interfaces\GeoInterface',
-                    'Weboap\Visitor\Geo\Max\MaxMind'
+                    'Weboap\Visitor\Services\Geo\GeoInterface',
+                    'Weboap\Visitor\Services\Geo\MaxMind'
+                );
+		
+		$this->app->singleton(
+                    'Weboap\Visitor\Services\Cache\CacheInterface',
+                    'Weboap\Visitor\Services\Cache\CacheClass'
                 );
 	}
+	
+	
+	
 
 	/**
 	 * Get the services provided by the provider.

@@ -22,7 +22,9 @@
 	    "Weboap\\Visitor\\": "src/Package/Visitor",
 	    "Weboap\\Visitor\\Seeders\\": "src/seeders",
 	    "Weboap\\Visitor\\Facades\\": "src/Package/Facades",
+	    "Weboap\\Visitor\\Models\\": "src/Package/Models",
 	    "Weboap\\Visitor\\Storage\\": "src/Package/Storage",
+	    "Weboap\\Visitor\\Services\\": "src/Package/Services",
 	    "Weboap\\Visitor\\Validation\\": "src/Package/Validation",
 	    "Weboap\\Visitor\\Geo\\": "src/Package/Geo",
 	    "Weboap\\Visitor\\Tests\\": "tests"

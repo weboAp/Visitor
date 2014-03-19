@@ -1,48 +1,76 @@
 <?php namespace Weboap\Visitor\Storage;
 
-use Illuminate\Cache\CacheManager as Cache;
+
 use Illuminate\Config\Repository as Config;
+use Illuminate\Database\DatabaseManager as DB;
 
-use Illuminate\Support\Facades\DB;
-use DateTime;
 
-class QbVisitorRepository implements Interfaces\VisitorInterface{
+class QbVisitorRepository implements VisitorInterface{
 
 protected $tableName = null;
 
-public function __construct(Config $config)
+/**
+ *  Illuminate\Database\DatabaseManager Instance
+ * @var Illuminate\Database\DatabaseManager
+ **/
+
+protected $db;
+
+
+
+/**
+ *  Config Instance
+ * @var Illuminate\Config\Repository
+ **/
+
+protected $config;
+
+
+public function __construct(Config $config, DB $db)
 {
     
-    $this->tableName = $config->get('visitor::table');
+    $this->config = $config;
+    $this->db = $db;
 }
 
 
+public function setTable($table)
+{
+    $this->tableName = $table;
+}
+
+public function getTable()
+{
+    return isset( $this->tableName )? $this->tableName : $this->config->get('visitor::table');
+    
+}
+
 public function create( array $data)
 {
-    return DB::table( $this->tableName )->insert($data);
+    return $this->db->table( $this->getTable() )->insert($data);
     
 }
 
 public function get($ip)
 {
-    return DB::table( $this->tableName )->whereIp( $ip )->first();
+    return $this->db->table( $this->getTable() )->whereIp( $ip )->first();
 }
   
 public function update( $ip, array $data)
 {
-    return DB::table( $this->tableName )->whereIp( $ip )->update( $data );
+    return $this->db->table( $this->getTable() )->whereIp( $ip )->update( $data );
 }    
        
 public function delete( $ip )
 {
-    return DB::table( $this->tableName )->whereIp( $ip )->delete();   
-    
+    return $this->db->table( $this->getTable() )->whereIp( $ip )->delete();
+   
 }
 
 public function all()
 {
     // Query the database and cache it forever
-   return DB::table( $this->tableName )->rememberForever( $this->tableName );
+   return $this->db->table( $this->getTable() )->rememberForever( $this->tableName );
     
 }
 
@@ -52,29 +80,29 @@ public function count( $ip = null )
 {
     if( ! isset( $ip ) )
     {
-        return DB::table( $this->tableName )->count();
+        return $this->db->table( $this->getTable() )->count();
     }
     else
     {
-          return DB::table( $this->tableName )->whereIp( $ip )->count();  
+          return $this->db->table( $this->getTable() )->whereIp( $ip )->count();  
     }
 }
 
 
 public function increment( $ip )
 {
-    DB::table( $this->tableName )->whereIp( $ip )->increment('clicks');
+    $this->db->table( $this->getTable() )->whereIp( $ip )->increment('clicks');
 }
 
 public function clicksSum()
 {
-    return DB::table( $this->tableName )->sum('clicks');
+    return $this->db->table( $this->getTable() )->sum('clicks');
   
 }
 
 public function range($start, $end)
 {
-    return DB::table( $this->tableName )->whereBetween('created_at', array($start, $end))->count(); 
+    return $this->db->table( $this->getTable() )->whereBetween('created_at', array($start, $end))->count(); 
 }
 
 
