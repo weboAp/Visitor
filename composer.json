@@ -1,6 +1,6 @@
 {
     "name": "weboap/visitor",
-    "description": "Register your visitors, Page hists, and visit counter for Laravel 4",
+    "description": "log your visitors in db, page hits, and generate visit counter for Laravel 4",
     "keywords": ["framework", "laravel","visitors", "counter", "log", "hits", "clicks"],
     "authors": [
         {
