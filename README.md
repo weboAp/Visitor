@@ -114,7 +114,8 @@ Visitor::range($date_start, $date_end); // visitors count in a date range;
 
 
 ```
-
+###Credits
+This product Uses GeoLite2 data created by MaxMind, whenever available.
 
 Enjoy!
  
