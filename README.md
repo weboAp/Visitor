@@ -113,23 +113,6 @@ Visitor::clicks(); //total of all clicks
 Visitor::range($date_start, $date_end); // visitors count in a date range;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ```
 
 
