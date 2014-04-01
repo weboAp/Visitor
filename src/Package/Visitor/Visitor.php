@@ -70,6 +70,11 @@ class Visitor implements Countable{
 	
 	public function get( $ip = null )
 	{
+		if( is_null ( $ip ) )
+		{
+			$ip = $this->ip->get();
+		}
+		
 		if( $this->ip->isValid( $ip ) )
 		{
 			return $this->storage->get( $ip );
@@ -77,6 +82,8 @@ class Visitor implements Countable{
 		
 		return null;	
 	}
+	
+	
 	
 	
 	public function log()
