@@ -70,7 +70,7 @@ class Visitor implements Countable{
 	
 	public function get( $ip = null )
 	{
-		if( is_null ( $ip ) )
+		if( ! isset( $ip ) )
 		{
 			$ip = $this->ip->get();
 		}

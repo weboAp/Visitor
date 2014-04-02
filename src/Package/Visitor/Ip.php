@@ -31,10 +31,14 @@ class Ip {
         
     }
     
-    public function isValid( $ip )
+    public function isValid( $ip = null )
     {
+        if( ! isset( $ip ) )
+	{
+	    return false;
+	}
         
-        foreach ($this->validators as $validator)
+	foreach ($this->validators as $validator)
             {
                     if( ! $validator->validate( $ip ) ) return false;
             }
