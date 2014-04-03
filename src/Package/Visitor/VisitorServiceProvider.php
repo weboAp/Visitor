@@ -53,6 +53,10 @@ class VisitorServiceProvider extends ServiceProvider {
 						 
 					      );
 			});
+		
+		$this->app->bind('Weboap\Visitor\Visitor', function($app) {
+			return $app['visitor'];
+		    });
 	
 	}
 	
