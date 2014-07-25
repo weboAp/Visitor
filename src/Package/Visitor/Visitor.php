@@ -9,6 +9,10 @@ use Carbon\Carbon as c;
 use Countable;
 
 
+/**
+ * Class Visitor
+ * @package Weboap\Visitor
+ */
 class Visitor implements Countable{
 	
 	
@@ -36,18 +40,26 @@ class Visitor implements Countable{
 	*/
 	protected $config;
 
-	
-	protected $ip;
+
+    /**
+     * @var Ip
+     */
+    protected $ip;
 	
 	/**
 	* The Geo Interface
 	*/
 	protected $geo;
-	
-	
-	
-	
-	public function __construct( 	VisitorInterface $storage,
+
+
+    /**
+     * @param VisitorInterface $storage
+     * @param GeoInterface $geo
+     * @param Ip $ip
+     * @param Config $config
+     * @param CacheClass $cache
+     */
+    public function __construct( 	VisitorInterface $storage,
 					GeoInterface $geo,
 					Ip $ip,
 					Config $config,
@@ -64,11 +76,13 @@ class Visitor implements Countable{
 		$this->tableName = $this->config->get('visitor::table');
 		
 	}
-	
-	
-	
-	
-	public function get( $ip = null )
+
+
+    /**
+     * @param null $ip
+     * @return null
+     */
+    public function get( $ip = null )
 	{
 		if( ! isset( $ip ) )
 		{
@@ -82,11 +96,12 @@ class Visitor implements Countable{
 		
 		return null;	
 	}
-	
-	
-	
-	
-	public function log()
+
+
+    /**
+     *
+     */
+    public function log()
 	{
 		
 		$ip = $this->ip->get();
@@ -125,9 +140,12 @@ class Visitor implements Countable{
 		
 		
 	}
-	
-	
-	public function forget( $ip )
+
+
+    /**
+     * @param $ip
+     */
+    public function forget( $ip )
 	{
 		if( ! $this->ip->isValid( $ip ) ) return;
 		
@@ -138,34 +156,53 @@ class Visitor implements Countable{
 		$this->cache->destroy( $this->tableName );
 	
 			
-	}	
-	
-	
-	public function has( $ip )
+	}
+
+
+    /**
+     * @param $ip
+     * @return bool
+     */
+    public function has( $ip )
 	{
 		if( ! $this->ip->isValid( $ip ) ) return false;
 		
 		return $this->count( $ip ) > 0 ;
 	
 	}
-	
-	public function count( $ip = null)
+
+    /**
+     * @param null $ip
+     * @return mixed
+     */
+    public function count( $ip = null)
 	{
 		//if ip null then return count of all visits
 		return $this->storage->count( $ip );
 	}
-	
-	public function all()
+
+    /**
+     * @return mixed
+     */
+    public function all()
 	{
 		return $this->storage->all();
 	}
-	
-	public function clicks()
+
+    /**
+     * @return mixed
+     */
+    public function clicks()
 	{
 		return $this->storage->clicksSum();
 	}
 
-	public function range($start, $end)
+    /**
+     * @param $start
+     * @param $end
+     * @return mixed
+     */
+    public function range($start, $end)
 	{
 		$start = date( 'Y-m-d H:i:s', strtotime( $start ));
 		$end = date( 'Y-m-d 23:59:59', strtotime( $end ));
