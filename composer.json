@@ -1,0 +1,26 @@
+{
+    "name": "weboap/visitor",
+    "description": "log your visitors in db, page hits, and generate visit counter for Laravel 4",
+    "keywords": ["framework", "laravel","visitors", "counter", "log", "hits", "clicks"],
+    "authors": [
+        {
+            "name": "WeboAp",
+            "email": "weboap@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+	"illuminate/support": "~5.0",
+	"jalle19/php-whitelist-check": "dev-master",
+	"geoip2/geoip2": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+	    "Weboap\\Visitor\\": "src"
+        }
+    },
+    "minimum-stability": "dev",
+    "require-dev": {
+	"phpspec/phpspec": "~2.1"	 	
+	}
+}
