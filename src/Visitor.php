@@ -2,9 +2,9 @@
 
 use Weboap\Visitor\Storage\VisitorInterface;
 use Weboap\Visitor\Services\Geo\GeoInterface;
+use Weboap\Visitor\Services\Cache\CacheInterface;
 
-use Weboap\Visitor\Services\Cache\CacheClass;
-use Illuminate\Config\Repository as Config;
+use Illuminate\Support\Collection;
 use Carbon\Carbon as c;
 use Countable;
 
@@ -38,13 +38,13 @@ class Visitor implements Countable{
 	* The Config Instance
 	* @var Config
 	*/
-	protected $config;
+	protected $collection;
 
 
-    /**
-     * @var Ip
-     */
-    protected $ip;
+	/**
+	 * @var Ip
+	 */
+	protected $ip;
 	
 	/**
 	* The Geo Interface
@@ -60,20 +60,17 @@ class Visitor implements Countable{
      * @param CacheClass $cache
      */
     public function __construct( 	VisitorInterface $storage,
-									GeoInterface $geo,
-									Ip $ip,
-									Config $config,
-									CacheClass $cache
-								    )
+					GeoInterface $geo,
+					Ip $ip,
+					CacheInterface $cache
+				    )
 	{
 		$this->storage 	= $storage;
-		$this->geo 		= $geo;
-		$this->ip 		= $ip;
-		$this->config 	= $config;
+		$this->geo 	= $geo;
+		$this->ip 	= $ip;
 		$this->cache 	= $cache;
 		
-		
-		$this->tableName = $this->config->get('visitor.table');
+		$this->collection = new Collection;
 		
 	}
 
@@ -135,7 +132,7 @@ class Visitor implements Countable{
 		}
 			
 		// Clear the database cache
-		$this->cache->destroy( $this->tableName );
+		$this->cache->destroy( 'weboap.visitor' );
 		
 		
 		
@@ -153,7 +150,7 @@ class Visitor implements Countable{
 		$this->storage->delete( $ip );
 		
 		// Clear the database cache
-		$this->cache->destroy( $this->tableName );
+		$this->cache->destroy( 'weboap.visitor' );
 	
 			
 	}
@@ -184,9 +181,16 @@ class Visitor implements Countable{
     /**
      * @return mixed
      */
-    public function all()
+    public function all($collection = false)
 	{
-		return $this->storage->all();
+		$result = $this->cache->rememberForever( 'weboap.visitor', $this->storage->all() );
+		
+		if( $collection )
+		{
+			return $this->collection->make($result);
+		}
+		
+		return $result;
 	}
 
     /**
@@ -213,7 +217,15 @@ class Visitor implements Countable{
 	
 	
 	
-	
+    public function clear()
+    {
+        //clear database
+        $this->storage->clear();
+        
+        // clear cached options
+        $this->cache->destroy('weboap.visitor');
+        
+    }
 
 	
     

@@ -3,7 +3,6 @@
 
 use Illuminate\Config\Repository as Config;
 use Illuminate\Database\DatabaseManager as DB;
-use Weboap\Visitor\Services\Cache\CacheInterface;
 
 
 class QbVisitorRepository implements VisitorInterface{
@@ -28,20 +27,14 @@ protected $db;
 protected $config;
 
 
-/**
- *  Config Instance
- * @var Illuminate\Config\Repository
- **/
-
-protected $cache;
 
 
-public function __construct(Config $config, DB $db, CacheInterface $cache)
+
+public function __construct(Config $config, DB $db)
 {
     
     $this->config       = $config;
     $this->db           = $db;
-    $this->cache        = $cache;
 }
 
 
@@ -80,10 +73,7 @@ public function delete( $ip )
 
 public function all()
 {
-    // Query the database and cache it forever
-
-    return $this->cache->rememberForever( $this->tableName , $this->db->table( $this->getTable() )->get() );
-
+    return $this->db->table( $this->getTable() )->get();
     
 }
 
@@ -116,6 +106,15 @@ public function clicksSum()
 public function range($start, $end)
 {
     return $this->db->table( $this->getTable() )->whereBetween('created_at', array($start, $end))->count(); 
+}
+
+/**
+ * delete all options from db.
+ * @return void
+ */
+public function clear()
+{
+   $this->db->table( $this->getTable() )->truncate();
 }
 
 

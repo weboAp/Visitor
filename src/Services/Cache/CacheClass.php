@@ -34,12 +34,5 @@ class CacheClass implements CacheInterface {
     }
     
     
-    
-    
-    
-    
-    
-    
-    
-    
+  
 }

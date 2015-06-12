@@ -50,11 +50,10 @@ class VisitorServiceProvider extends ServiceProvider {
 			   
 			    
 			    return new Visitor(
-						 $app->make('Weboap\Visitor\Storage\VisitorInterface'),
-						 $app->make('Weboap\Visitor\Services\Geo\GeoInterface'),
+						 $app['Weboap\Visitor\Storage\VisitorInterface'],
+						 $app['Weboap\Visitor\Services\Geo\GeoInterface'],
 						 $app['ip'],
-						 $app->make('config'),
-						 $app->make('Weboap\Visitor\Services\Cache\CacheInterface')
+						 $app['Weboap\Visitor\Services\Cache\CacheInterface']
 						 
 					      );
 			});
