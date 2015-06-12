@@ -103,7 +103,9 @@ Visitor::has( $ip );   // checkk if visitor ip exist in log
 Visitor::count()  // return count of all site registred unique visitors
 
 
-Visitor::all();  // all records
+Visitor::all();  // all records as array
+
+Visitor::all(true);  // all records as collection
 
 
 Visitor::clicks(); //total of all clicks
