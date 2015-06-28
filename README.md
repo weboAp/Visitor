@@ -1,7 +1,7 @@
 #Visitor
 ==============
 
-Register your visitors, Page hists, and count for Laravel 5
+Register your visitors, Page hits for Laravel 5  
 
 for laravel 4 use ver v1.0.0
 
