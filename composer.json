@@ -20,7 +20,10 @@
 	    "Weboap\\Visitor\\": "src"
         }
     },
-    "minimum-stability": "dev",
+	"config": {
+		"preferred-install": "dist"
+	},
+    "minimum-stability": "stable",
     "require-dev": {
 	"phpspec/phpspec": "~2.1"	 	
 	}
