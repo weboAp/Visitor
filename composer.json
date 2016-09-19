@@ -11,9 +11,9 @@
     ],
     "require": {
         "php": ">=5.4.0",
-	"illuminate/support": "~5.0",
-	"jalle19/php-whitelist-check": "1.0.4",
-	"geoip2/geoip2": "2.1.1"
+        "illuminate/support": "^5.0",
+        "jalle19/php-whitelist-check": "^1.0.6",
+        "geoip2/geoip2": "^2.4.2"
     },
     "autoload": {
         "psr-4": {
@@ -25,6 +25,6 @@
 	},
     "minimum-stability": "stable",
     "require-dev": {
-	"phpspec/phpspec": "~2.1"	 	
+		
 	}
 }
