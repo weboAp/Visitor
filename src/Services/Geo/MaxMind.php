@@ -7,60 +7,80 @@ use Illuminate\Http\Request as Request;
 use Weboap\Visitor\Ip;
 
 
-class MaxMind implements GeoInterface{
+/**
+ * Class MaxMind
+ *
+ * @package Weboap\Visitor\Services\Geo
+ */
+class MaxMind implements GeoInterface
+{
     
     
+    /**
+     * @var
+     */
     protected $reader;
     
+    /**
+     * @var \Illuminate\Config\Repository
+     */
     protected $config;
     
+    /**
+     * @var \Weboap\Visitor\Ip
+     */
     protected $ip;
     
-    public function __construct( Config $config, Ip $ip )
+    /**
+     * MaxMind constructor.
+     *
+     * @param \Illuminate\Config\Repository $config
+     * @param \Weboap\Visitor\Ip            $ip
+     */
+    public function __construct(Config $config, Ip $ip)
     {
-       $this->config = $config; 
-       $this->ip = $ip;
+        $this->config = $config;
+        $this->ip = $ip;
     }
     
 
-    
+    /**
+     * @return array
+     */
     public function locate()
     {
         //
         $ip = $this->ip->get();
-        $db =  $this->config->get('visitor.maxmind_db_path');
+        $db = $this->config->get('visitor.maxmind_db_path');
         
-        if( !is_string($db) || ! file_exists( $db )|| ! $this->ip->isValid( $ip ) ) return [];
-        
-        
-        $this->reader = new Reader( $db );
-         
-        try{
-           
-            $record = $this->reader->city( $ip );
-            
-             return [
-                          'country_code'    =>      $record->country->isoCode,
-                          'country_name'    =>      $record->country->name,
-                          'state_code'      =>      $record->mostSpecificSubdivision->isoCode,
-                          'state'           =>      $record->mostSpecificSubdivision->name,
-                          'city'            =>      $record->city->name,
-                          'postale_code'    =>      $record->postal->code
-                           
-                    ];
-        
+        if ( ! is_string($db) || ! file_exists($db) || ! $this->ip->isValid($ip)) {
+            return [];
         }
-        catch (AddressNotFoundException $e) {
+        
+        
+        $this->reader = new Reader($db);
+
+        try {
+
+            $record = $this->reader->city($ip);
+            
+            return [
+                'country_code' => $record->country->isoCode,
+                'country_name' => $record->country->name,
+                'state_code'   => $record->mostSpecificSubdivision->isoCode,
+                'state'        => $record->mostSpecificSubdivision->name,
+                'city'         => $record->city->name,
+                'postale_code' => $record->postal->code
+
+            ];
+
+        } catch (AddressNotFoundException $e) {
             
             return [];
         };
-           
+
     }
     
-    
-
-    
-  
     
 }
 

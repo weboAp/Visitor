@@ -1,12 +1,28 @@
 <?php namespace Weboap\Visitor\Services\Cache;
 
 
+/**
+ * Interface CacheInterface
+ *
+ * @package Weboap\Visitor\Services\Cache
+ */
+interface CacheInterface
+{
 
-interface CacheInterface {
+    /**
+     * @param $key
+     *
+     * @return mixed
+     */
+    public function destroy($key);
 
-public function destroy( $key );
-
-public function rememberForever( $key, $data );      
+    /**
+     * @param $key
+     * @param $data
+     *
+     * @return mixed
+     */
+    public function rememberForever($key, $data);
 
 
 }
