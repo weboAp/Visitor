@@ -43,7 +43,7 @@ class Checker implements ValidationInterface
      */
     public function validate($ip)
     {
-        $list = $this->config->get('visitor::ignored');
+        $list = $this->config->get('visitor.ignored');
         
         if ( ! is_array($list)) {
             $list = [];
