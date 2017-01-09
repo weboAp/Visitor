@@ -1,14 +1,12 @@
-<?php namespace Weboap\Visitor\Services\Cache;
+<?php
 
+namespace Weboap\Visitor\Services\Cache;
 
 /**
- * Interface CacheInterface
- *
- * @package Weboap\Visitor\Services\Cache
+ * Interface CacheInterface.
  */
 interface CacheInterface
 {
-
     /**
      * @param $key
      *
@@ -23,6 +21,4 @@ interface CacheInterface
      * @return mixed
      */
     public function rememberForever($key, $data);
-
-
 }

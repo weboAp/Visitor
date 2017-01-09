@@ -1,4 +1,6 @@
-<?php namespace Weboap\Visitor;
+<?php
+
+namespace Weboap\Visitor;
 
 use Carbon\Carbon as c;
 use Countable;
@@ -7,56 +9,49 @@ use Weboap\Visitor\Services\Cache\CacheInterface;
 use Weboap\Visitor\Services\Geo\GeoInterface;
 use Weboap\Visitor\Storage\VisitorInterface;
 
-
 /**
- * Class Visitor
- *
- * @package Weboap\Visitor
+ * Class Visitor.
  */
 class Visitor implements Countable
 {
-    
-    
     /**
-     * The Config array
+     * The Config array.
      *
      * @var string
      */
     protected $tableName = null;
-    
+
     /**
-     * The Option Repository Interface Instance
+     * The Option Repository Interface Instance.
      *
      * @var OpenInterface
      */
     protected $storage;
-    
+
     /**
-     * The Cache Interface
+     * The Cache Interface.
      *
      * @var Weboap\Visitor\Services\Cache\CacheClass
      */
     protected $cache;
-    
+
     /**
-     * The Config Instance
+     * The Config Instance.
      *
      * @var Config
      */
     protected $collection;
-    
-    
+
     /**
      * @var Ip
      */
     protected $ip;
-    
+
     /**
-     * The Geo Interface
+     * The Geo Interface.
      */
     protected $geo;
-    
-    
+
     /**
      * @param VisitorInterface $storage
      * @param GeoInterface     $geo
@@ -73,12 +68,10 @@ class Visitor implements Countable
         $this->geo = $geo;
         $this->ip = $ip;
         $this->cache = $cache;
-        
-        $this->collection = new Collection;
-        
+
+        $this->collection = new Collection();
     }
-    
-    
+
     /**
      * @param null $ip
      *
@@ -86,79 +79,62 @@ class Visitor implements Countable
      */
     public function get($ip = null)
     {
-        if ( ! isset( $ip )) {
+        if (!isset($ip)) {
             $ip = $this->ip->get();
         }
-        
+
         if ($this->ip->isValid($ip)) {
             return $this->storage->get($ip);
         }
-        
-        return null;
     }
-    
-    
-    /**
-     *
-     */
+
     public function log()
     {
-        
         $ip = $this->ip->get();
-        
-        if ( ! $this->ip->isValid($ip)) {
+
+        if (!$this->ip->isValid($ip)) {
             return;
         }
-        
-        
+
         if ($this->has($ip)) {
             //ip already exist in db.
             $this->storage->increment($ip);
-            
         } else {
             $geo = $this->geo->locate($ip);
-            
-            $country = array_key_exists('country_code', $geo) ? $geo[ 'country_code' ] : null;
-            
-            
+
+            $country = array_key_exists('country_code', $geo) ? $geo['country_code'] : null;
+
             //ip doesnt exist  in db
             $data = [
                 'ip'         => $ip,
                 'country'    => $country,
                 'clicks'     => 1,
                 'updated_at' => c::now(),
-                'created_at' => c::now()
+                'created_at' => c::now(),
             ];
             $this->storage->create($data);
-            
         }
-        
+
         // Clear the database cache
         $this->cache->destroy('weboap.visitor');
-        
-        
     }
-    
-    
+
     /**
      * @param $ip
      */
     public function forget($ip)
     {
-        if ( ! $this->ip->isValid($ip)) {
+        if (!$this->ip->isValid($ip)) {
             return;
         }
-        
+
         //delete the ip from db
         $this->storage->delete($ip);
-        
+
         // Clear the database cache
         $this->cache->destroy('weboap.visitor');
-        
-        
     }
-    
-    
+
     /**
      * @param $ip
      *
@@ -166,14 +142,13 @@ class Visitor implements Countable
      */
     public function has($ip)
     {
-        if ( ! $this->ip->isValid($ip)) {
+        if (!$this->ip->isValid($ip)) {
             return false;
         }
-        
+
         return $this->count($ip) > 0;
-        
     }
-    
+
     /**
      * @param null $ip
      *
@@ -184,21 +159,21 @@ class Visitor implements Countable
         //if ip null then return count of all visits
         return $this->storage->count($ip);
     }
-    
+
     /**
      * @return mixed
      */
     public function all($collection = false)
     {
         $result = $this->cache->rememberForever('weboap.visitor', $this->storage->all());
-        
+
         if ($collection) {
             return $this->collection->make($result);
         }
-        
+
         return $result;
     }
-    
+
     /**
      * @return mixed
      */
@@ -206,7 +181,7 @@ class Visitor implements Countable
     {
         return $this->storage->clicksSum();
     }
-    
+
     /**
      * @param $start
      * @param $end
@@ -217,14 +192,12 @@ class Visitor implements Countable
     {
         $start = date('Y-m-d H:i:s', strtotime($start));
         $end = date('Y-m-d 23:59:59', strtotime($end));
-        
-        
+
         return $this->storage->range($start, $end);
     }
-    
-    
+
     /**
-     * clear database records / cached results
+     * clear database records / cached results.
      *
      * @return void
      */
@@ -232,12 +205,8 @@ class Visitor implements Countable
     {
         //clear database
         $this->storage->clear();
-        
+
         // clear cached options
         $this->cache->destroy('weboap.visitor');
-        
     }
-    
-    
 }
-

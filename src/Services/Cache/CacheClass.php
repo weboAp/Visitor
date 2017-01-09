@@ -1,22 +1,19 @@
-<?php namespace Weboap\Visitor\Services\Cache;
+<?php
 
+namespace Weboap\Visitor\Services\Cache;
 
 use Illuminate\Cache\CacheManager as Cache;
 
-
 /**
- * Class CacheClass
- *
- * @package Weboap\Visitor\Services\Cache
+ * Class CacheClass.
  */
 class CacheClass implements CacheInterface
 {
-    
     /**
      * @var \Illuminate\Cache\CacheManager
      */
     protected $cache;
-    
+
     /**
      * CacheClass constructor.
      *
@@ -25,10 +22,8 @@ class CacheClass implements CacheInterface
     public function __construct(Cache $cache)
     {
         $this->cache = $cache;
-        
     }
 
-    
     /**
      * @param $key
      */
@@ -36,8 +31,7 @@ class CacheClass implements CacheInterface
     {
         $this->cache->forget($key);
     }
-    
-    
+
     /**
      * @param $key
      * @param $data
@@ -46,11 +40,8 @@ class CacheClass implements CacheInterface
      */
     public function rememberForever($key, $data)
     {
-
         return $this->cache->rememberForever($key, function () use ($data) {
             return $data;
         });
     }
-    
-    
 }

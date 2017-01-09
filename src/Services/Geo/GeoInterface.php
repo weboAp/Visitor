@@ -1,17 +1,14 @@
-<?php namespace Weboap\Visitor\Services\Geo;
+<?php
 
+namespace Weboap\Visitor\Services\Geo;
 
 /**
- * Interface GeoInterface
- *
- * @package Weboap\Visitor\Services\Geo
+ * Interface GeoInterface.
  */
 interface GeoInterface
 {
-
     /**
      * @return mixed
      */
     public function locate();
-
 }
