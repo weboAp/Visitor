@@ -1,14 +1,12 @@
-<?php namespace Weboap\Visitor\Storage;
+<?php
 
+namespace Weboap\Visitor\Storage;
 
 /**
- * Interface VisitorInterface
- *
- * @package Weboap\Visitor\Storage
+ * Interface VisitorInterface.
  */
 interface VisitorInterface
 {
-
     /**
      * @param array $data
      *
@@ -42,7 +40,7 @@ interface VisitorInterface
      * @return mixed
      */
     public function all();
-    
+
     /**
      * @param $ip
      *
@@ -69,5 +67,4 @@ interface VisitorInterface
      * @return mixed
      */
     public function range($start, $end);
-
 }

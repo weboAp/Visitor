@@ -1,46 +1,36 @@
-<?php namespace Weboap\Visitor\Storage;
+<?php
 
+namespace Weboap\Visitor\Storage;
 
 use Illuminate\Config\Repository as Config;
 use Illuminate\Database\DatabaseManager as DB;
 
-
 /**
- * Class QbVisitorRepository
- *
- * @package Weboap\Visitor\Storage
+ * Class QbVisitorRepository.
  */
 class QbVisitorRepository implements VisitorInterface
 {
-
-
     protected $tableName = null;
 
     /**
-     *  Illuminate\Database\DatabaseManager Instance
+     *  Illuminate\Database\DatabaseManager Instance.
      *
      * @var Illuminate\Database\DatabaseManager
      **/
-
     protected $db;
 
-    
     /**
-     *  Config Instance
+     *  Config Instance.
      *
      * @var Illuminate\Config\Repository
      **/
-
     protected $config;
-
 
     public function __construct(Config $config, DB $db)
     {
-
         $this->config = $config;
         $this->db = $db;
     }
-
 
     public function setTable($table)
     {
@@ -49,14 +39,12 @@ class QbVisitorRepository implements VisitorInterface
 
     public function getTable()
     {
-        return isset( $this->tableName ) ? $this->tableName : $this->config->get('visitor.table');
-
+        return isset($this->tableName) ? $this->tableName : $this->config->get('visitor.table');
     }
 
     public function create(array $data)
     {
         return $this->db->table($this->getTable())->insert($data);
-
     }
 
     public function get($ip)
@@ -72,25 +60,21 @@ class QbVisitorRepository implements VisitorInterface
     public function delete($ip)
     {
         return $this->db->table($this->getTable())->whereIp($ip)->delete();
-
     }
 
     public function all()
     {
         return $this->db->table($this->getTable())->get();
-
     }
-
 
     public function count($ip = null)
     {
-        if ( ! isset( $ip )) {
+        if (!isset($ip)) {
             return $this->db->table($this->getTable())->count();
         } else {
             return $this->db->table($this->getTable())->whereIp($ip)->count();
         }
     }
-
 
     public function increment($ip)
     {
@@ -100,7 +84,6 @@ class QbVisitorRepository implements VisitorInterface
     public function clicksSum()
     {
         return $this->db->table($this->getTable())->sum('clicks');
-
     }
 
     public function range($start, $end)
@@ -117,6 +100,4 @@ class QbVisitorRepository implements VisitorInterface
     {
         $this->db->table($this->getTable())->truncate();
     }
-
-
 }

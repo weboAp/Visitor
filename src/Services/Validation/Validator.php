@@ -1,15 +1,12 @@
-<?php namespace Weboap\Visitor\Services\Validation;
+<?php
 
+namespace Weboap\Visitor\Services\Validation;
 
 /**
- * Class Validator
- *
- * @package Weboap\Visitor\Services\Validation
+ * Class Validator.
  */
 class Validator implements ValidationInterface
 {
-    
-    
     /**
      * @param $ip
      *
@@ -21,8 +18,7 @@ class Validator implements ValidationInterface
             return true;
         }
     }
-    
-    
+
     /**
      * @param $ip
      *
@@ -32,7 +28,7 @@ class Validator implements ValidationInterface
     {
         return filter_var($ip, FILTER_VALIDATE_IP) !== false;
     }
-    
+
     /**
      * @param $ip
      *
@@ -42,5 +38,4 @@ class Validator implements ValidationInterface
     {
         return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false;
     }
-
 }

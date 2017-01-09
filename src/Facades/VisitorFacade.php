@@ -1,10 +1,11 @@
-<?php namespace Weboap\Visitor\Facades;
+<?php
+
+namespace Weboap\Visitor\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
 class VisitorFacade extends Facade
 {
-
     /**
      * Get the registered name of the component.
      *
@@ -14,5 +15,4 @@ class VisitorFacade extends Facade
     {
         return 'visitor';
     }
-    
 }
