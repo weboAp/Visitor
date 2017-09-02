@@ -12,26 +12,18 @@ The recommended way to install Winput is through composer.
 
 ## Step 1
 
-Just add to  `composer.json` file:
+run 
 
 ``` json
-{
-    "require": {
-        "weboap/visitor": "dev-master"
-    }
-}
+composer require weboap/visitor
 ```
 
-then run 
-``` php
-php composer.phar update
-```
 
 ## Step 2
-
-Add
+ 
+Add if your laravel version is < 5.5
 ``` php
-'Weboap\Visitor\VisitorServiceProvider'
+	Weboap\Visitor\VisitorServiceProvider::class
 ``` 
 
 to the list of service providers in app/config/app.php
