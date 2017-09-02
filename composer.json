@@ -31,6 +31,16 @@
   "config": {
     "preferred-install": "dist"
   },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Weboap\\Visitor\\VisitorServiceProvider"
+      ],
+      "aliases": {
+        "Visitor": "Weboap\\Visitor\\Facades\\VisitorFacade"
+      }
+    }
+  },
   "minimum-stability": "stable",
   "require-dev": {
   }
