@@ -1,28 +1,24 @@
-<?php namespace Weboap\Visitor;
+<?php
 
+namespace Weboap\Visitor;
 
 use Illuminate\Http\Request as Request;
 
-
 /**
- * Class Ip
- *
- * @package Weboap\Visitor
+ * Class Ip.
  */
 class Ip
 {
-    
     /**
      * @var null
      */
     protected $ip = null;
-    
+
     /**
      * @var \Illuminate\Http\Request
      */
     protected $request;
-    
-    
+
     /**
      * Ip constructor.
      *
@@ -33,24 +29,22 @@ class Ip
     {
         $this->request = $request;
         $this->validators = $validators;
-        
     }
-    
+
     /**
      * @return string
      */
     public function get()
     {
         $ip = $this->request->getClientIp();
-        
+
         if ($ip == '::1') {
             $ip = '127.0.0.1';
         }
-        
+
         return $ip;
-        
     }
-    
+
     /**
      * @param null $ip
      *
@@ -58,18 +52,16 @@ class Ip
      */
     public function isValid($ip = null)
     {
-        if ( ! isset( $ip )) {
+        if (!isset($ip)) {
             return false;
         }
-        
+
         foreach ($this->validators as $validator) {
-            if ( ! $validator->validate($ip)) {
+            if (!$validator->validate($ip)) {
                 return false;
             }
         }
-        
+
         return true;
     }
-    
-    
 }

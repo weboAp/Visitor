@@ -5,7 +5,6 @@
 
     class CreateVisitorRegistry extends Migration
     {
-
         /**
          * Run the migrations.
          *
@@ -31,5 +30,4 @@
         {
             Schema::drop('visitor_registry');
         }
-
     }
