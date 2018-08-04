@@ -8,7 +8,7 @@ for laravel 4 use ver v1.0.0
 ### Installation
 
 
-The recommended way to install Winput is through composer.
+The recommended way to install Visitor is through composer.
 
 ## Step 1
 
